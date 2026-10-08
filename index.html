@@ -74,7 +74,7 @@ mark{border-radius:5px;padding:1px 3px;color:#fff}
 <body>
 <div id="hud"></div><div class="wrap" id="app"></div><div id="fx"></div>
 <script>
-const LV=[["Beginner",0],["Learner",50],["Developing Writer",100],["Skilled Writer",150],["Reflective Writer",250]];
+const LV=[["Beginner",0],["Learner",100],["Skilled Writer",250],["Reflective Writer",300]];
 const STG=["Reflection Detective","Marker Challenge","Reflection Minefield","Reflection Builder","Certification Vault"];
 const CATS=["Context","Significant Event","Personal Response","Analysis","Self-Awareness","Learning","Future Action"];
 const B=[ // builder options [text,score]
@@ -104,7 +104,7 @@ function toast(a,t){const d=document.createElement("div");d.className="toast";d.
 function xp(n){S.xp+=n;toast("+"+n+" points","Level progress")}
 const val=(c,p)=>B[c][p][1], total=p=>Object.keys(p).reduce((a,c)=>a+val(+c,p[c]),0);
 const pct=p=>Math.max(0,Math.round(total(p)/140*100));
-const cls=s=>s>=80?["Advanced Reflective Writer","Your reflection demonstrates strong analysis, self-awareness, learning and future action."]:s>=60?["Competent Reflective Writer","Your reflection demonstrates emerging reflection and learning."]:["Emerging Reflective Writer","Your reflection contains description but requires deeper analysis and self-awareness."];
+const cls=s=>s>=80?["","Your reflection demonstrates strong analysis, self-awareness, learning and future action."]:s>=60?["","Your reflection demonstrates emerging reflection and learning."]:["","Your reflection contains description but requires deeper analysis and self-awareness."];
 const col=v=>v===undefined||v<=0?"r":v<15?"a":"g";
 const para=p=>CATS.map((_,i)=>p[i]!==undefined?B[i][p[i]][0]:"").filter(Boolean).join(" ");
 function hud(){const l=lvl(),p=Math.round(S.done/5*100);
@@ -156,7 +156,7 @@ function result(){const sc=S.s2,[c,d]=cls(sc),ok=sc>=70,p=S.best,wk=CATS.map((_,
 const areas=wk.length?`<p style="margin:10px 0 0"><b>${ok?"Areas you could still strengthen:":"Areas to strengthen:"}</b></p><ul class="lst">${wk.map(i=>`<li>${HINT[i]}</li>`).join("")}</ul>Choose responses that are specific, explain why, examine your own part and commit to concrete action.`:"";
 return `<div class="card"><span class="tag">Level 4 · Final Challenge results</span><h2>${sc==100?"Well done – full marks":ok?"Reflection accepted":"Not quite there yet"}</h2>
 <div class="${S.tries>1?"two":""}"><div class="card" style="margin:0"><div class="mu">${S.tries>1?"BEST SCORE":"YOUR SCORE"}</div><div class="big">${sc}%</div></div>${S.tries>1?`<div class="card" style="margin:0"><div class="mu">LATEST ATTEMPT</div><div class="big">${S.last}%</div></div>`:""}</div>
-${sc==100?`<div class="fb"><b>Well done.</b> You selected the strongest response in every section. ${d}</div>`:ok?`<div class="fb"><b>${c}.</b> ${d} You have passed the 70% threshold. You can continue now, or revise to improve your mark. Your best mark will be shown on your certificate.${areas}</div>`:`<div class="fb n"><b>You need at least 70% to progress.</b>${areas}</div>`}
+${sc==100?`<div class="fb"><b>Well done.</b> You selected the strongest response in every section. ${d}</div>`:ok?`<div class="fb">${d} You have passed the 70% threshold. You can continue now, or revise to improve your mark. Your best mark will be shown on your certificate.${areas}</div>`:`<div class="fb n"><b>You need at least 70% to progress.</b>${areas}</div>`}
 <h3>Your reflection</h3><div class="ref">${hl(p)}</div><p style="font-size:.85rem">${LEG}</p>
 ${sc==100?UNL:`${!S.acc?`<button class="btn ghost" onclick="S.res=false;render();scrollTo(0,0)">${ok?"Revise to improve my mark":"Revise my reflection"}</button> `:""}${ok&&!S.acc?`<button class="btn" onclick="accept()">Accept this mark and continue →</button>`:""}`}</div>${S.acc&&ok&&sc<100?`<div id="rem">${exemplar()}</div><div style="text-align:center">${UNL}</div>`:""}`}
 const UNL=`<button class="btn" onclick="openV()">Unlock the Certification Vault →</button>`;
@@ -171,11 +171,39 @@ return `<svg class="vsvg" viewBox="0 0 320 240" role="img" aria-label="A secure 
 <circle cx="160" cy="120" r="90" fill="url(#vg)"/><g fill="none" stroke="#5eead4" stroke-width="1.8"><rect x="112" y="84" width="96" height="72" rx="4"/><line x1="126" y1="104" x2="194" y2="104"/><line x1="126" y1="118" x2="194" y2="118"/><line x1="126" y1="132" x2="170" y2="132"/><circle cx="188" cy="136" r="8"/></g>
 <g class="vdoor"><circle cx="160" cy="120" r="86" fill="#0f172a" stroke="#14b8a6" stroke-width="3"/><circle cx="160" cy="120" r="68" fill="none" stroke="#14b8a6" stroke-opacity=".6" stroke-width="1.5"/>${bolts}${spokes}<circle cx="160" cy="120" r="22" fill="#0f172a" stroke="#14b8a6" stroke-width="2.5"/><circle cx="160" cy="120" r="7" fill="#14b8a6"/></g>
 <rect x="22" y="56" width="14" height="26" rx="3" fill="#0f172a" stroke="#14b8a6" stroke-width="2"/><rect x="22" y="158" width="14" height="26" rx="3" fill="#0f172a" stroke="#14b8a6" stroke-width="2"/></svg>`}
-function vault(){const c=cls(S.s2),n=esc(S.name.trim()||"Student");const d=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+function vault(){const n=esc(S.name.trim()||"Student");const d=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
 return `<div class="card" style="text-align:center"><span class="tag">Final Stage</span><h2>The Certification Vault</h2>${vaultSvg()}<h3 style="margin:0">Well done, ${n}</h3><p style="margin:4px 0 0">Your certificate is ready.</p></div>
-<div class="cert card"><div class="tag">Laura Warrington's</div><h2>ONLINE WRITTEN REFLECTION ACADEMY</h2><div class="mu">Certificate of Completion</div><p class="mu">This certifies that</p><h2 style="letter-spacing:.04em;font-size:1.9rem;border-bottom:1px solid var(--teal);display:inline-block;padding:0 24px 4px">${n}</h2><p class="mu">has completed the Online Written Reflection Academy and is awarded the title of</p><h3 style="color:var(--teal)">${c[0]}</h3><p>Reflection Builder mark: <b>${S.s2}%</b> · Date completed: <b>${d}</b></p></div>
-<p style="text-align:center"><button class="btn ghost" onclick="print()">Print certificate</button></p>
+<div class="cert card"><div class="tag">Laura Warrington's</div><h2>ONLINE WRITTEN REFLECTION ACADEMY</h2><div class="mu">Certificate of Completion</div><p class="mu">This certifies that</p><h2 style="letter-spacing:.04em;font-size:1.9rem;border-bottom:1px solid var(--teal);display:inline-block;padding:0 24px 4px">${n}</h2><p class="mu">has successfully completed the Online Written Reflection Academy, demonstrating understanding of reflective writing: description, analysis, self-awareness, learning and future action.</p><p>Reflection Builder mark: <b>${S.s2}%</b> · Date completed: <b>${d}</b></p></div>
+<p style="text-align:center"><button class="btn" onclick="dlCert()">Download certificate (PDF, A4 landscape)</button></p>
 <div class="card"><h2>What Makes a Strong Reflection?</h2><p><b>Strong reflections:</b></p><p>✓ Move beyond description<br>✓ Explore causes and consequences<br>✓ Demonstrate self-awareness<br>✓ Identify meaningful learning<br>✓ Explain how future behaviour will change</p><p>Reflection is a skill developed through practice. Small improvements in analysis, self-awareness and action planning can significantly improve academic performance.</p><h2 style="text-align:center;color:var(--teal);letter-spacing:.2em;margin-top:24px">REFLECTION ACADEMY COMPLETE</h2><p style="text-align:center">You are welcome to upload your certificate to your LUBS5907 workbook.</p></div>`}
+function mkPdf(j,W,H){const e=new TextEncoder(),parts=[],off=[];let len=0;const add=b=>{if(typeof b=="string")b=e.encode(b);parts.push(b);len+=b.length};const pw=841.89,ph=595.28;
+add("%PDF-1.4\n");const obj=(n,body)=>{off[n]=len;add(n+" 0 obj\n");body.forEach(add);add("\nendobj\n")};
+obj(1,["<< /Type /Catalog /Pages 2 0 R >>"]);obj(2,["<< /Type /Pages /Kids [3 0 R] /Count 1 >>"]);
+obj(3,[`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>`]);
+const c=`q ${pw} 0 0 ${ph} 0 0 cm /Im0 Do Q`;obj(4,[`<< /Length ${c.length} >>\nstream\n${c}\nendstream`]);
+obj(5,[`<< /Type /XObject /Subtype /Image /Width ${W} /Height ${H} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${j.length} >>\nstream\n`,j,"\nendstream"]);
+const xr=len;let t="xref\n0 6\n0000000000 65535 f \n";for(let i=1;i<6;i++)t+=String(off[i]).padStart(10,"0")+" 00000 n \n";
+add(t+`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`);const out=new Uint8Array(len);let p=0;parts.forEach(b=>{out.set(b,p);p+=b.length});return out}
+function certJpeg(n,d){const W=2339,H=1654,cv=document.createElement("canvas");cv.width=W;cv.height=H;const x=cv.getContext("2d"),NAVY="#0f172a",TEAL="#0d9488",GREY="#475569",SANS="Helvetica, Arial, sans-serif",SERIF="Georgia, 'Times New Roman', serif";
+x.fillStyle="#fff";x.fillRect(0,0,W,H);x.strokeStyle=TEAL;x.lineWidth=14;x.strokeRect(50,50,W-100,H-100);x.lineWidth=3;x.strokeRect(85,85,W-170,H-170);
+const T=(t,y,size,col,fam,wt,ls,maxW)=>{x.fillStyle=col;x.textAlign="center";x.textBaseline="alphabetic";try{x.letterSpacing=(ls||0)+"px"}catch(e){}
+let z=size;x.font=`${wt||""} ${z}px ${fam}`;while(maxW&&x.measureText(t).width>maxW&&z>20){z-=2;x.font=`${wt||""} ${z}px ${fam}`}x.fillText(t,W/2+(ls||0)/2,y)};
+T("LAURA WARRINGTON'S",290,46,TEAL,SANS,"bold",14);T("ONLINE WRITTEN REFLECTION ACADEMY",410,80,NAVY,SERIF,"bold",4,1950);T("CERTIFICATE OF COMPLETION",500,40,GREY,SANS,"",12);
+T("This certifies that",640,42,GREY,SERIF,"italic",0);T(n,800,130,NAVY,SERIF,"italic bold",0,1700);
+x.strokeStyle=TEAL;x.lineWidth=4;x.beginPath();x.moveTo(W/2-700,850);x.lineTo(W/2+700,850);x.stroke();
+T("has successfully completed the Online Written Reflection Academy,",960,46,NAVY,SANS,"",0,1900);
+T("demonstrating understanding of reflective writing: description, analysis,",1040,38,GREY,SANS,"",0,1900);T("self-awareness, learning and future action.",1095,38,GREY,SANS,"",0,1900);
+T("Reflection Builder mark: "+S.s2+"%",1230,58,TEAL,SANS,"bold",0);T("Date completed: "+d,1320,44,NAVY,SANS,"",0);
+{const cx=W/2,cy=1428,R=54;x.strokeStyle=TEAL;x.fillStyle="#fff";x.lineWidth=4;x.lineJoin="round";
+for(const sd of [-1,1]){x.beginPath();[[6,20],[36,20],[44,100],[28,88],[14,102]].forEach((p,i)=>x[i?"lineTo":"moveTo"](cx+sd*p[0],cy+p[1]));x.closePath();x.fill();x.stroke()}
+x.beginPath();for(let i=0;i<48;i++){const r=i%2?R-6:R,t=i/48*Math.PI*2;x[i?"lineTo":"moveTo"](cx+r*Math.cos(t),cy+r*Math.sin(t))}x.closePath();x.fill();x.lineWidth=5;x.stroke();
+x.lineWidth=3;x.beginPath();x.arc(cx,cy,R-15,0,7);x.stroke();x.lineWidth=1.5;x.beginPath();x.arc(cx,cy,R-21,0,7);x.stroke();
+T("LW",cy+14,38,TEAL,SERIF,"bold",0)}
+return Uint8Array.from(atob(cv.toDataURL("image/jpeg",.92).split(",")[1]),c=>c.charCodeAt(0))}
+async function dlCert(){const n=S.name.trim()||"Student",d=new Date().toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+const pdf=mkPdf(certJpeg(n,d),2339,1654),fn="Reflection-Academy-Certificate-"+(n.replace(/[^\p{L}\p{N}]+/gu,"-").replace(/^-|-$/g,"")||"Student")+".pdf";
+try{const dl=window.claude&&await window.claude.use("downloads");if(dl){await dl.save({filename:fn,data:pdf});return}}catch(e){if(e&&e.code=="declined")return}
+const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([pdf],{type:"application/pdf"}));a.download=fn;document.body.appendChild(a);a.click();a.remove()}
 function confetti(){const f=$("fx"),c=document.createElement("div");c.className="conf";c.setAttribute("aria-hidden","true");for(let i=0;i<50;i++){const b=document.createElement("b");b.style.left=Math.random()*100+"%";b.style.animationDelay=Math.random()*1.5+"s";b.style.background=["#14b8a6","#5eead4","#fff","#94a3b8"][i%4];c.appendChild(b)}f.appendChild(c);setTimeout(()=>c.remove(),5500)}
 render();
 </script></body></html>
